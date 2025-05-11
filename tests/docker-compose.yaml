@@ -2,9 +2,8 @@
 services:
   fullbogons:
     build:
-      context: .
+      context: ..
       dockerfile: Dockerfile
-    privileged: true
     environment:
       - "BIRD_ROUTER_ID=10.1.2.3"
       - "BIRD_ASN=64666"
@@ -12,6 +11,7 @@ services:
       - "BIRD_EXCLUDED_PREFIXES=10.0.0.0/8;172.16.0.0/12;192.168.0.0/16"
     networks:
       - fullbogons
+    privileged: true
   test:
     command: /bin/bash -c "sleep 60 && apt-get update && apt-get --no-install-recommends --yes install netcat-openbsd && nc -zv fullbogons 179"
     depends_on:
