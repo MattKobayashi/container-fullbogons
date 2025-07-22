@@ -1,11 +1,14 @@
 FROM alpine:3.22.1@sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1
 
-RUN apk --no-cache add supercronic
+# renovate: datasource=repology depName=alpine_3_22/supercronic
+ENV SUPERCRONIC_VERSION="0.2.33-r5"
+
+RUN apk --no-cache add supercronic="${SUPERCRONIC_VERSION}"
 
 # Set BIRD environment variables
 ENV SOURCE_FILE=bird.tar.gz \
-    SOURCE_URL=https://gitlab.nic.cz/labs/bird/-/archive/v2.16.1/bird-v2.16.1.tar.gz \
-    SOURCE_SHA1SUM=cc6e5e7d0dcb05fafca48c38e2a46fd8a05dfaba
+    SOURCE_URL=https://gitlab.nic.cz/labs/bird/-/archive/v3.0.4/bird-v3.0.4.tar.gz \
+    SOURCE_SHA1SUM=28433b21a774b973665be5a18e39b9973449501a
 
 # Install BIRD
 WORKDIR /bird
