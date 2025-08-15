@@ -1,6 +1,6 @@
 # fullbogons
 
-A BIRD daemon with templated Team Cymru fullbogon import and iBGP session configuration in an Alpine Linux-based Docker image.
+A BIRD daemon with templated Team Cymru fullbogon import and iBGP session configuration in a Debian Linux-based Docker image.
 
 ## Configuration
 

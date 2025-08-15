@@ -1,16 +1,29 @@
-FROM alpine:3.22.1@sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1
+FROM debian:13.0-slim@sha256:c85a2732e97694ea77237c61304b3bb410e0e961dd6ee945997a06c788c545bb
+COPY --from=ghcr.io/astral-sh/uv:0.8.11@sha256:8101ad825250a114e7bef89eefaa73c31e34e10ffbe5aff01562740bac97553c /uv /uvx /bin/
 
-RUN apk --no-cache add supercronic
+RUN apt-get update \
+    && apt-get install --no-install-recommends --yes ca-certificates curl zstd
+
+# Latest releases available at https://github.com/aptible/supercronic/releases
+ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.34/supercronic-linux-amd64 \
+    SUPERCRONIC_SHA1SUM=e8631edc1775000d119b70fd40339a7238eece14 \
+    SUPERCRONIC=supercronic-linux-amd64
+
+RUN curl -fsSLO "$SUPERCRONIC_URL" \
+    && echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - \
+    && chmod +x "$SUPERCRONIC" \
+    && mv "$SUPERCRONIC" "/usr/local/bin/${SUPERCRONIC}" \
+    && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
 
 # Set BIRD environment variables
-ENV SOURCE_FILE=bird.tar.gz \
-    SOURCE_URL=https://gitlab.nic.cz/labs/bird/-/archive/v2.16.1/bird-v2.16.1.tar.gz \
-    SOURCE_SHA1SUM=cc6e5e7d0dcb05fafca48c38e2a46fd8a05dfaba
+ENV SOURCE_FILE=bird-v3.0.4.tar.gz \
+    SOURCE_URL=https://gitlab.nic.cz/labs/bird/-/archive/v3.0.4/bird-v3.0.4.tar.gz \
+    SOURCE_SHA1SUM=28433b21a774b973665be5a18e39b9973449501a
 
 # Install BIRD
 WORKDIR /bird
-RUN apk --no-cache add tar build-base autoconf flex bison linux-headers ncurses-dev libssh-dev readline-dev \
-    && wget -O "$SOURCE_FILE" "$SOURCE_URL" \
+RUN apt-get install --no-install-recommends --yes build-essential autoconf flex bison git linux-headers-amd64 libncurses-dev libssh-dev libreadline-dev \
+    && curl -fsSLO "$SOURCE_URL" \
     && echo "${SOURCE_SHA1SUM}  ${SOURCE_FILE}" | sha1sum -c - \
     && tar -xz --strip-components=1 --file="$SOURCE_FILE" \
     && autoreconf \
@@ -19,7 +32,7 @@ RUN apk --no-cache add tar build-base autoconf flex bison linux-headers ncurses-
     && make install
 
 # Post-install cleanup
-RUN apk del tar build-base autoconf \
+RUN apt-get remove --yes build-essential autoconf git zstd \
     && rm -rf /bird/*
 
 # Copy external files
@@ -30,10 +43,12 @@ COPY crontab/* crontab/
 COPY entrypoint.sh .
 
 # Set up image for running BIRD
-RUN adduser -D bird \
-    && chown -R bird /bird/ \
-    && apk --no-cache upgrade \
-    && apk add py3-uv
+RUN apt-get install --no-install-recommends --yes adduser \
+    && adduser bird \
+    && apt-get remove --yes adduser \
+    && apt-get autoremove --yes \
+    && apt-get clean \
+    && chown -R bird /bird/
 
 # Set expose ports
 # BGP: 179/tcp
