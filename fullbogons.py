@@ -1,12 +1,10 @@
 # /// script
-# requires-python = ">=3.12"
+# requires-python = ">=3.13, <3.14"
 # dependencies = [
 #     "jinja2==3.1.6",
 #     "requests==2.32.4",
 # ]
 # ///
-
-#!/usr/bin/env python3
 
 from ipaddress import ip_network
 import os
