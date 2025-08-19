@@ -2,7 +2,7 @@
 # requires-python = ">=3.13, <3.14"
 # dependencies = [
 #     "jinja2==3.1.6",
-#     "requests==2.32.4",
+#     "requests==2.32.5",
 # ]
 # ///
 
