@@ -1,5 +1,5 @@
 FROM debian:13.1-slim@sha256:c2880112cc5c61e1200c26f106e4123627b49726375eb5846313da9cca117337
-COPY --from=ghcr.io/astral-sh/uv:0.8.21@sha256:ca74b4b463d7dfc1176cbe82a02b6e143fd03a144dcb1a87c3c3e81ac16c6f6d /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.8.22@sha256:9874eb7afe5ca16c363fe80b294fe700e460df29a55532bbfea234a0f12eddb1 /uv /uvx /bin/
 
 RUN apt-get update \
     && apt-get install --no-install-recommends --yes ca-certificates curl zstd
