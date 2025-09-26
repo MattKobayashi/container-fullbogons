@@ -16,7 +16,7 @@ services:
     command: /bin/bash -c "sleep 60 && apt-get update && apt-get --no-install-recommends --yes install netcat-openbsd && nc -zv fullbogons 179"
     depends_on:
       - fullbogons
-    image: "debian:12-slim@sha256:4b50eb66f977b4062683ff434ef18ac191da862dbe966961bc11990cf5791a8d"
+    image: "debian:13.1-slim@sha256:c2880112cc5c61e1200c26f106e4123627b49726375eb5846313da9cca117337"
     networks:
       - fullbogons
 networks:

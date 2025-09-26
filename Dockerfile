@@ -36,7 +36,6 @@ RUN apt-get remove --yes build-essential autoconf git zstd \
     && rm -rf /bird/*
 
 # Copy external files
-COPY requirements.txt .
 COPY fullbogons.py .
 COPY templates/* templates/
 COPY crontab/* crontab/
