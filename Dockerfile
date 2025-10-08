@@ -5,8 +5,8 @@ RUN apt-get update \
     && apt-get install --no-install-recommends --yes ca-certificates curl zstd
 
 # Latest releases available at https://github.com/aptible/supercronic/releases
-ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.36/supercronic-linux-amd64 \
-    SUPERCRONIC_SHA1SUM=53a484404b0c559d64f78e9481a3ec22f782dc46 \
+ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.37/supercronic-linux-amd64 \
+    SUPERCRONIC_SHA1SUM=ef9e0eca04e5793bf8093523a39635b0920d3fa8 \
     SUPERCRONIC=supercronic-linux-amd64
 
 RUN curl -fsSLO "$SUPERCRONIC_URL" \
