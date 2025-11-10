@@ -2,37 +2,44 @@ FROM debian:13.1-slim@sha256:a347fd7510ee31a84387619a492ad6c8eb0af2f2682b916ff3e
 COPY --from=ghcr.io/astral-sh/uv:0.9.8@sha256:08f409e1d53e77dfb5b65c788491f8ca70fe1d2d459f41c89afa2fcbef998abe /uv /uvx /bin/
 
 RUN apt-get update \
-    && apt-get install --no-install-recommends --yes ca-certificates curl zstd
+    && apt-get install --no-install-recommends --yes \
+    ca-certificates \
+    curl \
+    jq \
+    zstd
 
-# Latest releases available at https://github.com/aptible/supercronic/releases
-ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.39/supercronic-linux-amd64 \
-    SUPERCRONIC_SHA1SUM=c98bbf82c5f648aaac8708c182cc83046fe48423 \
-    SUPERCRONIC=supercronic-linux-amd64
-
-RUN curl -fsSLO "$SUPERCRONIC_URL" \
-    && echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - \
+# renovate: datasource=github-releases packageName=aptible/supercronic
+ENV SUPERCRONIC_VERSION="v0.2.39"
+ENV SUPERCRONIC="supercronic-linux-amd64"
+ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/${SUPERCRONIC_VERSION}/${SUPERCRONIC}
+RUN export SUPERCRONIC_SHA256SUM=$(curl -fsSL \
+    -H "Accept: application/vnd.github+json" \
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    https://api.github.com/repos/aptible/supercronic/releases \
+    | jq -r '.[] | select(.name == $ENV.SUPERCRONIC_VERSION) | .assets[] | select(.name == $ENV.SUPERCRONIC) | .digest') \
+    && echo "SHA256 digest from API: ${SUPERCRONIC_SHA256SUM}" \
+    && curl -fsSLO "$SUPERCRONIC_URL" \
+    && echo "${SUPERCRONIC_SHA256SUM}  ${SUPERCRONIC}" | sed -e 's/^sha256://' | sha256sum -c - \
     && chmod +x "$SUPERCRONIC" \
     && mv "$SUPERCRONIC" "/usr/local/bin/${SUPERCRONIC}" \
     && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
 
-# Set BIRD environment variables
-ENV SOURCE_FILE=bird-v3.0.4.tar.gz \
-    SOURCE_URL=https://gitlab.nic.cz/labs/bird/-/archive/v3.0.4/bird-v3.0.4.tar.gz \
-    SOURCE_SHA1SUM=28433b21a774b973665be5a18e39b9973449501a
+# renovate: datasource=github-tags packageName=CZ-NIC/bird
+ENV BIRD_VERSION="v3.0.4"
+ENV BIRD_URL=https://github.com/CZ-NIC/bird/archive/refs/tags/${BIRD_VERSION}.tar.gz
 
 # Install BIRD
 WORKDIR /bird
 RUN apt-get install --no-install-recommends --yes build-essential autoconf flex bison git linux-headers-amd64 libncurses-dev libssh-dev libreadline-dev \
-    && curl -fsSLO "$SOURCE_URL" \
-    && echo "${SOURCE_SHA1SUM}  ${SOURCE_FILE}" | sha1sum -c - \
-    && tar -xz --strip-components=1 --file="$SOURCE_FILE" \
+    && curl -fsSLo bird.tar.gz "$BIRD_URL" \
+    && tar -xz --strip-components=1 --file="bird.tar.gz" \
     && autoreconf \
     && ./configure \
     && make \
     && make install
 
 # Post-install cleanup
-RUN apt-get remove --yes build-essential autoconf git zstd \
+RUN apt-get remove --yes build-essential autoconf git jq zstd \
     && rm -rf /bird/*
 
 # Copy external files
