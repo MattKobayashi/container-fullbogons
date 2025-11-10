@@ -25,7 +25,7 @@ RUN export SUPERCRONIC_SHA256SUM=$(curl -fsSL \
     && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
 
 # renovate: datasource=github-tags packageName=CZ-NIC/bird
-ENV BIRD_VERSION="v3.0.4"
+ENV BIRD_VERSION="v3.1.4"
 ENV BIRD_URL=https://github.com/CZ-NIC/bird/archive/refs/tags/${BIRD_VERSION}.tar.gz
 
 # Install BIRD
