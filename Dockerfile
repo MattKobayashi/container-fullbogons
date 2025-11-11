@@ -8,10 +8,11 @@ RUN apt-get update \
     jq \
     zstd
 
+# Supercronic
 # renovate: datasource=github-releases packageName=aptible/supercronic
-ENV SUPERCRONIC_VERSION="v0.2.39"
-ENV SUPERCRONIC="supercronic-linux-amd64"
-ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/${SUPERCRONIC_VERSION}/${SUPERCRONIC}
+ARG SUPERCRONIC_VERSION="v0.2.39"
+ARG SUPERCRONIC="supercronic-linux-amd64"
+ARG SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/${SUPERCRONIC_VERSION}/${SUPERCRONIC}
 RUN export SUPERCRONIC_SHA256SUM=$(curl -fsSL \
     -H "Accept: application/vnd.github+json" \
     -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -25,8 +26,8 @@ RUN export SUPERCRONIC_SHA256SUM=$(curl -fsSL \
     && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
 
 # renovate: datasource=github-tags packageName=CZ-NIC/bird
-ENV BIRD_VERSION="v3.1.4"
-ENV BIRD_URL=https://github.com/CZ-NIC/bird/archive/refs/tags/${BIRD_VERSION}.tar.gz
+ARG BIRD_VERSION="v3.1.4"
+ARG BIRD_URL=https://github.com/CZ-NIC/bird/archive/refs/tags/${BIRD_VERSION}.tar.gz
 
 # Install BIRD
 WORKDIR /bird
