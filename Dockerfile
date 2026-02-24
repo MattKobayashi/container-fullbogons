@@ -1,5 +1,5 @@
 FROM debian:13.3-slim@sha256:f6e2cfac5cf956ea044b4bd75e6397b4372ad88fe00908045e9a0d21712ae3ba
-COPY --from=ghcr.io/astral-sh/uv:0.10.5@sha256:bf1bf9c28b23b856867ec06634ceb5415bf01724db234b65a8a28f94248526d2 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.10.5@sha256:476133fa2aaddb4cbee003e3dc79a88d327a5dc7cb3179b7f02cabd8fdfbcc6e /uv /uvx /bin/
 
 RUN apt-get update \
     && apt-get install --no-install-recommends --yes \
