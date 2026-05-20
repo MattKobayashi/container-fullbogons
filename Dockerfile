@@ -1,4 +1,4 @@
-FROM debian:13.5-slim@sha256:dd723c6aa29afd6e310a82dca36ecd596ccc34827d6e3518ab41873b7b582f07
+FROM debian:13.5-slim@sha256:b6e2a152f22a40ff69d92cb397223c906017e1391a73c952b588e51af8883bf8
 COPY --from=ghcr.io/astral-sh/uv:0.11.15@sha256:e590846f4776907b254ac0f44b5b380347af5d90d668138ca7938d1b0c2f98d3 /uv /uvx /bin/
 
 RUN apt-get update \
